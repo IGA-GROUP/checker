@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка доменов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+        h1 { color: #333; }
+        textarea { width: 100%; height: 150px; margin-top: 10px; }
+        button { margin-top: 10px; padding: 10px 15px; background: #0078D7; color: white; border: none; cursor: pointer; }
+        button:hover { background: #005bb5; }
+        .result { margin-top: 20px; }
+        .working { color: green; }
+        .not-working { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Проверка доступности доменов</h1>
+    <p>Введите список доменов (по одному на строку):</p>
+    <p>(загрузка примерно 5 секунд)<p>
+    <textarea id="domains"></textarea>
+    <button onclick="checkDomains()">Проверить</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        async function checkDomains() {
+            const domains = document.getElementById('domains').value.split('\n').map(domain => domain.trim()).filter(domain => domain);
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            for (const domain of domains) {
+                try {
+                    const response = await fetch(`https://${domain}`, { method: 'HEAD', mode: 'no-cors' });
+                    resultDiv.innerHTML += `<p class="working">✅ ${domain} - работает</p>`;
+                } catch {
+                    resultDiv.innerHTML += `<p class="not-working">❌ ${domain} - не работает</p>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
